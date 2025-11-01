@@ -1,9 +1,14 @@
-# By: Volker Strobel, improved by Patrick Hofmann
+"""Google Scholar publication count scraper.
+
+Original code by: Volker Strobel
+Source: https://github.com/Pold87/academic-keyword-occurrence
+Used with attribution in HypePlot project.
+"""
 from bs4 import BeautifulSoup
 from urllib.request import Request, build_opener, HTTPCookieProcessor
 from urllib.parse import urlencode
 from http.cookiejar import MozillaCookieJar
-import re, time, sys, urllib
+import re, time, sys
 
 def get_num_results(search_term, start_date, end_date):
     """
@@ -13,7 +18,7 @@ def get_num_results(search_term, start_date, end_date):
     # Open website and read html
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36'
     query_params = { 'q' : search_term, 'as_ylo' : start_date, 'as_yhi' : end_date}
-    url = "https://scholar.google.com/scholar?as_vis=1&hl=en&as_sdt=1,5&" + urllib.parse.urlencode(query_params)
+    url = "https://scholar.google.com/scholar?as_vis=1&hl=en&as_sdt=1,5&" + urlencode(query_params)
     opener = build_opener()
     request = Request(url=url, headers={'User-Agent': user_agent})
     handler = opener.open(request)
@@ -40,9 +45,17 @@ def get_num_results(search_term, start_date, end_date):
 
     return num_results, success
 
-def get_range(search_term, start_date, end_date):
-
-    fp = open("out.csv", 'w')
+def get_range(search_term, start_date, end_date, output_file="out.csv"):
+    """
+    Extract Google Scholar publication counts for a date range.
+    
+    Args:
+        search_term: Search query
+        start_date: Start year
+        end_date: End year
+        output_file: Path to output CSV file (default: "out.csv")
+    """
+    fp = open(output_file, 'w')
     fp.write("year,results\n")
     print("year,results")
 

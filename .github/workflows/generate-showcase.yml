@@ -1,0 +1,84 @@
+name: Generate HypePlot Showcase
+
+on:
+  # Run monthly on the 1st at 2am UTC
+  schedule:
+    - cron: '0 2 1 * *'
+  # Allow manual trigger
+  workflow_dispatch:
+  # Run on pushes to main/master to test
+  push:
+    branches: [master, main]
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: Install dependencies
+        run: |
+          uv sync
+      
+      - name: Generate FHIR showcase - Yearly Overview (All Sources)
+        run: |
+          uv run hype "FHIR" 2015 2025 --source github,arxiv,reddit,youtube --bucket yearly
+        continue-on-error: true
+      
+      - name: Generate FHIR showcase - Quarterly Trends
+        run: |
+          uv run hype "FHIR" 2023 2025 --source github,arxiv,reddit --bucket quarterly
+        continue-on-error: true
+      
+      - name: Generate FHIR showcase - Monthly Detail (Recent)
+        run: |
+          uv run hype "FHIR" 2024 2025 --source github,reddit,news --bucket monthly
+        continue-on-error: true
+      
+      - name: Generate AI showcase - Yearly Overview
+        run: |
+          uv run hype "artificial intelligence" 2018 2025 --source github,arxiv,youtube --bucket yearly
+        continue-on-error: true
+      
+      - name: Generate Python showcase - Monthly Packages
+        run: |
+          uv run hype "pandas" 2023 2025 --source packages --bucket monthly
+        continue-on-error: true
+      
+      - name: Create GitHub Pages directory
+        run: |
+          mkdir -p gh-pages
+          
+          # Copy all generated outputs
+          if [ -d "outputs" ]; then
+            cp -r outputs gh-pages/
+          fi
+          
+          # Copy index page from docs
+          if [ -f "docs/index.html" ]; then
+            cp docs/index.html gh-pages/index.html
+          fi
+      
+      - name: Generate timestamp
+        run: |
+          echo "Generated on $(date -u '+%Y-%m-%d %H:%M:%S UTC')" > gh-pages/last-update.txt
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          publish_branch: gh-pages
+          cname: false

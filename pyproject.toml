@@ -1,0 +1,31 @@
+[project]
+name = "hypeplot"
+version = "1.0.0"
+description = "Track topic hype cycles by analyzing Google Scholar publications and Google Trends search interest"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "plotly>=5.18.0",
+    "pandas>=2.1.0",
+    "pytrends>=4.9.2",
+    "kaleido>=1.1.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+]
+
+[project.scripts]
+hype = "hype:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+py-modules = ["hype", "scholar", "trends", "utils_io", "extract_occurrences"]
+
+[tool.setuptools.packages.find]
+exclude = ["outputs*", "trends_cache*", "__pycache__*", "docs*", ".github*"]

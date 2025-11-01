@@ -1,7 +1,7 @@
 version: "3"
 services:
-  academickeywordoccurrence:
+  hypeplot:
       build: .
-      command: python ./extract_occurrences.py 'Bitcoin' 2005 2015 
+      command: python ./hype.py plot 'Bitcoin' 2010 2025 --topic
       volumes:
         - ./:/data

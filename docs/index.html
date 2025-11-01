@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HypePlot - Multi-Source Academic Keyword Tracking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>� HypePlot</h1>
+            <p class="tagline">Multi-Source Academic Keyword Tracking</p>
+            <p class="subtitle">Track trends across 11 data sources with configurable time buckets</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h2>About This Project</h2>
+            <p>
+                HypePlot is a comprehensive tool for tracking keyword trends across multiple platforms and timeframes. 
+                It combines <strong>11 powerful data sources</strong> to give you a complete picture of topic evolution:
+            </p>
+            <div class="sources-grid">
+                <div class="source-tag">🐙 GitHub</div>
+                <div class="source-tag">📚 arXiv</div>
+                <div class="source-tag">💬 Reddit</div>
+                <div class="source-tag">▶️ YouTube</div>
+                <div class="source-tag">🎓 Scholar</div>
+                <div class="source-tag">� Trends</div>
+                <div class="source-tag">📰 News</div>
+                <div class="source-tag">🐦 Twitter</div>
+                <div class="source-tag">⚖️ Patents</div>
+                <div class="source-tag">📦 Packages</div>
+                <div class="source-tag">💼 Jobs</div>
+            </div>
+            <p style="margin-top: 20px;">
+                <strong>Flexible Time Bucketing:</strong> Analyze data at yearly, monthly, quarterly, or custom intervals (e.g., every 10 days).
+            </p>
+        </section>
+
+        <section class="showcase">
+            <h2>📚 Showcase Examples</h2>
+            
+            <div class="showcase-card">
+                <h3>FHIR - Yearly Overview (2015-2025)</h3>
+                <p class="chart-description">
+                    Long-term trends across GitHub, arXiv, Reddit, and YouTube showing FHIR adoption.
+                </p>
+                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
+            </div>
+
+            <div class="showcase-card">
+                <h3>FHIR - Quarterly Trends (2023-2025)</h3>
+                <p class="chart-description">
+                    Recent momentum in research and development activity.
+                </p>
+                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
+            </div>
+
+            <div class="showcase-card">
+                <h3>Artificial Intelligence - Yearly (2018-2025)</h3>
+                <p class="chart-description">
+                    Growth of AI across code repositories, research papers, and video content.
+                </p>
+                <a href="outputs/ai/" class="button primary">View AI Data</a>
+            </div>
+
+            <div class="showcase-card">
+                <h3>Python Packages - Monthly Downloads</h3>
+                <p class="chart-description">
+                    PyPI download statistics with monthly granularity for popular packages.
+                </p>
+                <a href="outputs/python/" class="button primary">View Package Data</a>
+            </div>
+        </section>
+
+        <section class="usage">
+            <h2>🚀 Use It Yourself</h2>
+            <p>Want to analyze your own topics? Install and run HypePlot locally:</p>
+            
+            <div class="code-block">
+                <code># Clone the repository
+git clone https://github.com/quotentiroler/HypePlot
+cd HypePlot
+
+# Install dependencies (requires Python 3.12+ and uv)
+pip install uv
+uv sync
+
+# Run with different sources and time buckets
+uv run hype "FHIR" 2024 2025 --source github --bucket monthly
+uv run hype "python" 2023 2025 --source github,arxiv --bucket quarterly
+uv run hype "covid" 2020 2024 --source patents,news --bucket yearly
+
+# Custom buckets (10-day periods)
+uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
+            </div>
+
+            <h3>Available Sources</h3>
+            <ul>
+                <li><code>github</code> - Repository counts and metrics</li>
+                <li><code>arxiv</code> - Research preprints</li>
+                <li><code>reddit</code> - Discussion posts via Pushshift</li>
+                <li><code>youtube</code> - Video content</li>
+                <li><code>scholar</code> - Academic publications</li>
+                <li><code>trends</code> - Google search interest</li>
+                <li><code>news</code> - News articles (NewsAPI)</li>
+                <li><code>twitter</code> - Mentions (requires API access)</li>
+                <li><code>patents</code> - USPTO patents</li>
+                <li><code>packages</code> - PyPI download stats</li>
+                <li><code>jobs</code> - Job postings (Adzuna)</li>
+            </ul>
+
+            <h3>Time Bucket Options</h3>
+            <ul>
+                <li><code>--bucket yearly</code> - Annual aggregation (365 days)</li>
+                <li><code>--bucket quarterly</code> - Quarterly periods (90 days)</li>
+                <li><code>--bucket monthly</code> - Monthly periods (30 days)</li>
+                <li><code>--bucket days:N</code> - Custom N-day periods</li>
+            </ul>
+        </section>
+
+        <section class="features">
+            <h2>✨ Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3>� 11 Data Sources</h3>
+                    <p>Comprehensive coverage across platforms</p>
+                </div>
+                <div class="feature">
+                    <h3>📅 Flexible Bucketing</h3>
+                    <p>Yearly, monthly, quarterly, or custom intervals</p>
+                </div>
+                <div class="feature">
+                    <h3>� Interactive Plots</h3>
+                    <p>Built with Plotly for rich interactivity</p>
+                </div>
+                <div class="feature">
+                    <h3>� CSV Export</h3>
+                    <p>All data exported for further analysis</p>
+                </div>
+                <div class="feature">
+                    <h3>� Modern Python</h3>
+                    <p>Built with uv, type hints, async-ready</p>
+                </div>
+                <div class="feature">
+                    <h3>🤖 Automation Ready</h3>
+                    <p>GitHub Actions for scheduled updates</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <h2>Get Started</h2>
+            <div class="button-group">
+                <a href="https://github.com/quotentiroler/HypePlot" 
+                   class="button primary" target="_blank" rel="noopener">
+                    View on GitHub
+                </a>
+                <a href="https://github.com/quotentiroler/HypePlot/issues" 
+                   class="button secondary" target="_blank" rel="noopener">
+                    Report Issues
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                Built with Python • uv • Plotly • 11 Data Sources
+            </p>
+            <p class="update-info">
+                Last updated: <span id="last-update">Check GitHub Actions</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Try to load last update time
+        fetch('last-update.txt')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('last-update').textContent = data.trim();
+            })
+            .catch(() => {
+                document.getElementById('last-update').textContent = 'See GitHub Actions for build status';
+            });
+    </script>
+</body>
+</html>
