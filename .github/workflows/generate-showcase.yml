@@ -79,7 +79,7 @@ jobs:
       - name: Upload outputs as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: showcase-${{ github.run_id }}-${{ strategy.job-index }}
+          name: showcase-${{ matrix.showcase.name }}
           path: outputs/
           retention-days: 1
   
@@ -95,7 +95,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: showcase-${{ github.run_id }}-*
+          pattern: showcase-*
           path: outputs/
           merge-multiple: true
       
