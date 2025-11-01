@@ -14,6 +14,45 @@ jobs:
   generate-and-deploy:
     runs-on: ubuntu-latest
     
+    strategy:
+      fail-fast: false
+      matrix:
+        showcase:
+          - name: "FHIR Yearly Overview"
+            query: "FHIR"
+            start: 2015
+            end: 2025
+            sources: "github,arxiv,reddit,youtube"
+            bucket: "yearly"
+          
+          - name: "FHIR Quarterly Trends"
+            query: "FHIR"
+            start: 2023
+            end: 2025
+            sources: "github,arxiv,reddit"
+            bucket: "quarterly"
+          
+          - name: "FHIR Monthly Detail"
+            query: "FHIR"
+            start: 2024
+            end: 2025
+            sources: "github,reddit,news"
+            bucket: "monthly"
+          
+          - name: "AI Yearly Overview"
+            query: "artificial intelligence"
+            start: 2018
+            end: 2025
+            sources: "github,arxiv,youtube"
+            bucket: "yearly"
+          
+          - name: "Python Packages Monthly"
+            query: "pandas"
+            start: 2023
+            end: 2025
+            sources: "packages"
+            bucket: "monthly"
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,30 +71,33 @@ jobs:
         run: |
           uv sync
       
-      - name: Generate FHIR showcase - Yearly Overview (All Sources)
+      - name: Generate ${{ matrix.showcase.name }}
         run: |
-          uv run hype "FHIR" 2015 2025 --source github,arxiv,reddit,youtube --bucket yearly
+          uv run hype "${{ matrix.showcase.query }}" ${{ matrix.showcase.start }} ${{ matrix.showcase.end }} --source ${{ matrix.showcase.sources }} --bucket ${{ matrix.showcase.bucket }}
         continue-on-error: true
       
-      - name: Generate FHIR showcase - Quarterly Trends
-        run: |
-          uv run hype "FHIR" 2023 2025 --source github,arxiv,reddit --bucket quarterly
-        continue-on-error: true
+      - name: Upload outputs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: showcase-${{ github.run_id }}-${{ strategy.job-index }}
+          path: outputs/
+          retention-days: 1
+  
+  deploy:
+    needs: generate-and-deploy
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       
-      - name: Generate FHIR showcase - Monthly Detail (Recent)
-        run: |
-          uv run hype "FHIR" 2024 2025 --source github,reddit,news --bucket monthly
-        continue-on-error: true
-      
-      - name: Generate AI showcase - Yearly Overview
-        run: |
-          uv run hype "artificial intelligence" 2018 2025 --source github,arxiv,youtube --bucket yearly
-        continue-on-error: true
-      
-      - name: Generate Python showcase - Monthly Packages
-        run: |
-          uv run hype "pandas" 2023 2025 --source packages --bucket monthly
-        continue-on-error: true
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: showcase-${{ github.run_id }}-*
+          path: outputs/
+          merge-multiple: true
       
       - name: Create GitHub Pages directory
         run: |
@@ -69,6 +111,11 @@ jobs:
           # Copy index page from docs
           if [ -f "docs/index.html" ]; then
             cp docs/index.html gh-pages/index.html
+          fi
+          
+          # Copy styles
+          if [ -f "docs/style.css" ]; then
+            cp docs/style.css gh-pages/style.css
           fi
       
       - name: Generate timestamp
