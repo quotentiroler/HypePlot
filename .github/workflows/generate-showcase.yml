@@ -73,7 +73,7 @@ jobs:
       
       - name: Generate ${{ matrix.showcase.name }}
         run: |
-          uv run hype "${{ matrix.showcase.query }}" ${{ matrix.showcase.start }} ${{ matrix.showcase.end }} --source ${{ matrix.showcase.sources }} --bucket ${{ matrix.showcase.bucket }}
+          uv run hype "${{ matrix.showcase.query }}" ${{ matrix.showcase.start }} ${{ matrix.showcase.end }} plot --source ${{ matrix.showcase.sources }} --bucket ${{ matrix.showcase.bucket }}
         continue-on-error: true
       
       - name: Upload outputs as artifact
