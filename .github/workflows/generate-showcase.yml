@@ -108,10 +108,10 @@ jobs:
             cp -r outputs gh-pages/
           fi
           
-          # Copy index page from docs
-          if [ -f "docs/index.html" ]; then
-            cp docs/index.html gh-pages/index.html
-          fi
+          # Generate dynamic index page
+          cd gh-pages
+          python3 ../generate_index.py
+          cd ..
           
           # Copy styles
           if [ -f "docs/style.css" ]; then

@@ -1,15 +1,69 @@
-<!DOCTYPE html>
+"""
+Generate dynamic index.html for GitHub Pages based on actual output files.
+"""
+from pathlib import Path
+import json
+from datetime import datetime
+
+def scan_outputs(outputs_dir: Path) -> dict:
+    """Scan outputs directory and return structure of generated files."""
+    structure = {}
+    
+    if not outputs_dir.exists():
+        return structure
+    
+    # Scan all topic folders
+    for topic_dir in outputs_dir.iterdir():
+        if not topic_dir.is_dir():
+            continue
+        
+        topic_name = topic_dir.name
+        structure[topic_name] = {}
+        
+        # Scan all source folders within topic
+        for source_dir in topic_dir.iterdir():
+            if not source_dir.is_dir():
+                continue
+            
+            source_name = source_dir.name
+            files: dict[str, str | None] = {
+                'html': None,
+                'csv': None,
+                'png': None
+            }
+            
+            # Find files
+            for file in source_dir.iterdir():
+                if file.suffix == '.html':
+                    files['html'] = f"outputs/{topic_name}/{source_name}/{file.name}"
+                elif file.suffix == '.csv':
+                    files['csv'] = f"outputs/{topic_name}/{source_name}/{file.name}"
+                elif file.suffix == '.png':
+                    files['png'] = f"outputs/{topic_name}/{source_name}/{file.name}"
+            
+            structure[topic_name][source_name] = files
+    
+    return structure
+
+def format_topic_name(topic: str) -> str:
+    """Format topic name for display."""
+    return topic.replace('_', ' ').title()
+
+def generate_html(structure: dict, output_file: Path):
+    """Generate HTML index page."""
+    
+    html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HypePlot - Multi-Source Academic Keyword Tracking</title>
+    <title>HypePlot Showcase - Multi-Source Academic Keyword Tracking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>� HypePlot</h1>
+            <h1>📊 HypePlot</h1>
             <p class="tagline">Multi-Source Academic Keyword Tracking</p>
             <p class="subtitle">Track trends across 11 data sources with configurable time buckets</p>
         </div>
@@ -28,7 +82,7 @@
                 <div class="source-tag">💬 Reddit</div>
                 <div class="source-tag">▶️ YouTube</div>
                 <div class="source-tag">🎓 Scholar</div>
-                <div class="source-tag">� Trends</div>
+                <div class="source-tag">📈 Trends</div>
                 <div class="source-tag">📰 News</div>
                 <div class="source-tag">🐦 Twitter</div>
                 <div class="source-tag">⚖️ Patents</div>
@@ -42,38 +96,39 @@
 
         <section class="showcase">
             <h2>📚 Showcase Examples</h2>
-            
+'''
+    
+    # Generate showcase cards for each topic
+    for topic, sources in sorted(structure.items()):
+        topic_display = format_topic_name(topic)
+        
+        html += f'''
             <div class="showcase-card">
-                <h3>FHIR - Yearly Overview (2015-2025)</h3>
+                <h3>{topic_display}</h3>
                 <p class="chart-description">
-                    Long-term trends across GitHub, arXiv, Reddit, and YouTube showing FHIR adoption.
+                    Data from {', '.join(sources.keys())} sources
                 </p>
-                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
+                <div class="button-group">
+'''
+        
+        # Add buttons for each source
+        for source, files in sorted(sources.items()):
+            if files['html']:
+                html += f'                    <a href="{files["html"]}" class="button primary">{source.title()} Chart</a>\n'
+        
+        # Add CSV download links
+        has_csv = any(files['csv'] for files in sources.values())
+        if has_csv:
+            html += '                    <br>\n'
+            for source, files in sorted(sources.items()):
+                if files['csv']:
+                    html += f'                    <a href="{files["csv"]}" class="button secondary">{source.title()} CSV</a>\n'
+        
+        html += '''                </div>
             </div>
-
-            <div class="showcase-card">
-                <h3>FHIR - Quarterly Trends (2023-2025)</h3>
-                <p class="chart-description">
-                    Recent momentum in research and development activity.
-                </p>
-                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
-            </div>
-
-            <div class="showcase-card">
-                <h3>Artificial Intelligence - Yearly (2018-2025)</h3>
-                <p class="chart-description">
-                    Growth of AI across code repositories, research papers, and video content.
-                </p>
-                <a href="outputs/ai/" class="button primary">View AI Data</a>
-            </div>
-
-            <div class="showcase-card">
-                <h3>Python Packages - Monthly Downloads</h3>
-                <p class="chart-description">
-                    PyPI download statistics with monthly granularity for popular packages.
-                </p>
-                <a href="outputs/python/" class="button primary">View Package Data</a>
-            </div>
+'''
+    
+    html += '''
         </section>
 
         <section class="usage">
@@ -90,12 +145,12 @@ pip install uv
 uv sync
 
 # Run with different sources and time buckets
-uv run hype "FHIR" 2024 2025 --source github --bucket monthly
-uv run hype "python" 2023 2025 --source github,arxiv --bucket quarterly
-uv run hype "covid" 2020 2024 --source patents,news --bucket yearly
+uv run hype "FHIR" 2024 2025 plot --source github --bucket monthly
+uv run hype "python" 2023 2025 plot --source github,arxiv --bucket quarterly
+uv run hype "covid" 2020 2024 plot --source patents,news --bucket yearly
 
 # Custom buckets (10-day periods)
-uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
+uv run hype "AI" 2025 2025 plot --source github --bucket days:10</code>
             </div>
 
             <h3>Available Sources</h3>
@@ -126,7 +181,7 @@ uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
             <h2>✨ Features</h2>
             <div class="feature-grid">
                 <div class="feature">
-                    <h3>� 11 Data Sources</h3>
+                    <h3>🔍 11 Data Sources</h3>
                     <p>Comprehensive coverage across platforms</p>
                 </div>
                 <div class="feature">
@@ -134,15 +189,15 @@ uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
                     <p>Yearly, monthly, quarterly, or custom intervals</p>
                 </div>
                 <div class="feature">
-                    <h3>� Interactive Plots</h3>
+                    <h3>📈 Interactive Plots</h3>
                     <p>Built with Plotly for rich interactivity</p>
                 </div>
                 <div class="feature">
-                    <h3>� CSV Export</h3>
+                    <h3>💾 CSV Export</h3>
                     <p>All data exported for further analysis</p>
                 </div>
                 <div class="feature">
-                    <h3>� Modern Python</h3>
+                    <h3>🐍 Modern Python</h3>
                     <p>Built with uv, type hints, async-ready</p>
                 </div>
                 <div class="feature">
@@ -190,4 +245,17 @@ uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
             });
     </script>
 </body>
-</html>
+</html>'''
+    
+    output_file.write_text(html, encoding='utf-8')
+    print(f"✅ Generated {output_file}")
+
+if __name__ == "__main__":
+    outputs_dir = Path("outputs")
+    structure = scan_outputs(outputs_dir)
+    
+    print(f"Found {len(structure)} topics:")
+    for topic, sources in structure.items():
+        print(f"  - {topic}: {', '.join(sources.keys())}")
+    
+    generate_html(structure, Path("index.html"))
