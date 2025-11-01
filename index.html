@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HypePlot - Multi-Source Academic Keyword Tracking</title>
+    <title>HypePlot Showcase - Multi-Source Academic Keyword Tracking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>� HypePlot</h1>
+            <h1>📊 HypePlot</h1>
             <p class="tagline">Multi-Source Academic Keyword Tracking</p>
             <p class="subtitle">Track trends across 11 data sources with configurable time buckets</p>
         </div>
@@ -28,7 +28,7 @@
                 <div class="source-tag">💬 Reddit</div>
                 <div class="source-tag">▶️ YouTube</div>
                 <div class="source-tag">🎓 Scholar</div>
-                <div class="source-tag">� Trends</div>
+                <div class="source-tag">📈 Trends</div>
                 <div class="source-tag">📰 News</div>
                 <div class="source-tag">🐦 Twitter</div>
                 <div class="source-tag">⚖️ Patents</div>
@@ -42,38 +42,54 @@
 
         <section class="showcase">
             <h2>📚 Showcase Examples</h2>
-            
+
             <div class="showcase-card">
-                <h3>FHIR - Yearly Overview (2015-2025)</h3>
+                <h3>Artificial Intelligence</h3>
                 <p class="chart-description">
-                    Long-term trends across GitHub, arXiv, Reddit, and YouTube showing FHIR adoption.
+                    Data from youtube, github, arxiv sources
                 </p>
-                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
+                <div class="button-group">
+                    <a href="outputs/artificial_intelligence/arxiv/artificial_intelligence_arxiv.html" class="button primary">Arxiv Chart</a>
+                    <a href="outputs/artificial_intelligence/github/artificial_intelligence_github.html" class="button primary">Github Chart</a>
+                    <a href="outputs/artificial_intelligence/youtube/artificial_intelligence_youtube.html" class="button primary">Youtube Chart</a>
+                    <br>
+                    <a href="outputs/artificial_intelligence/arxiv/artificial_intelligence_arxiv_data.csv" class="button secondary">Arxiv CSV</a>
+                    <a href="outputs/artificial_intelligence/github/artificial_intelligence_github_data.csv" class="button secondary">Github CSV</a>
+                    <a href="outputs/artificial_intelligence/youtube/artificial_intelligence_youtube_data.csv" class="button secondary">Youtube CSV</a>
+                </div>
             </div>
 
             <div class="showcase-card">
-                <h3>FHIR - Quarterly Trends (2023-2025)</h3>
+                <h3>Fhir</h3>
                 <p class="chart-description">
-                    Recent momentum in research and development activity.
+                    Data from youtube, github, news, reddit, arxiv sources
                 </p>
-                <a href="outputs/fhir/" class="button primary">View FHIR Data</a>
+                <div class="button-group">
+                    <a href="outputs/fhir/arxiv/fhir_arxiv.html" class="button primary">Arxiv Chart</a>
+                    <a href="outputs/fhir/github/fhir_github.html" class="button primary">Github Chart</a>
+                    <a href="outputs/fhir/news/fhir_news.html" class="button primary">News Chart</a>
+                    <a href="outputs/fhir/reddit/fhir_reddit.html" class="button primary">Reddit Chart</a>
+                    <a href="outputs/fhir/youtube/fhir_youtube.html" class="button primary">Youtube Chart</a>
+                    <br>
+                    <a href="outputs/fhir/arxiv/fhir_arxiv_data.csv" class="button secondary">Arxiv CSV</a>
+                    <a href="outputs/fhir/github/fhir_github_data.csv" class="button secondary">Github CSV</a>
+                    <a href="outputs/fhir/news/fhir_news_data.csv" class="button secondary">News CSV</a>
+                    <a href="outputs/fhir/reddit/fhir_reddit_data.csv" class="button secondary">Reddit CSV</a>
+                    <a href="outputs/fhir/youtube/fhir_youtube_data.csv" class="button secondary">Youtube CSV</a>
+                </div>
             </div>
 
             <div class="showcase-card">
-                <h3>Artificial Intelligence - Yearly (2018-2025)</h3>
+                <h3>Pandas</h3>
                 <p class="chart-description">
-                    Growth of AI across code repositories, research papers, and video content.
+                    Data from packages sources
                 </p>
-                <a href="outputs/ai/" class="button primary">View AI Data</a>
+                <div class="button-group">
+                    <br>
+                    <a href="outputs/pandas/packages/pandas_packages_data.csv" class="button secondary">Packages CSV</a>
+                </div>
             </div>
 
-            <div class="showcase-card">
-                <h3>Python Packages - Monthly Downloads</h3>
-                <p class="chart-description">
-                    PyPI download statistics with monthly granularity for popular packages.
-                </p>
-                <a href="outputs/python/" class="button primary">View Package Data</a>
-            </div>
         </section>
 
         <section class="usage">
@@ -90,12 +106,12 @@ pip install uv
 uv sync
 
 # Run with different sources and time buckets
-uv run hype "FHIR" 2024 2025 --source github --bucket monthly
-uv run hype "python" 2023 2025 --source github,arxiv --bucket quarterly
-uv run hype "covid" 2020 2024 --source patents,news --bucket yearly
+uv run hype "FHIR" 2024 2025 plot --source github --bucket monthly
+uv run hype "python" 2023 2025 plot --source github,arxiv --bucket quarterly
+uv run hype "covid" 2020 2024 plot --source patents,news --bucket yearly
 
 # Custom buckets (10-day periods)
-uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
+uv run hype "AI" 2025 2025 plot --source github --bucket days:10</code>
             </div>
 
             <h3>Available Sources</h3>
@@ -126,7 +142,7 @@ uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
             <h2>✨ Features</h2>
             <div class="feature-grid">
                 <div class="feature">
-                    <h3>� 11 Data Sources</h3>
+                    <h3>🔍 11 Data Sources</h3>
                     <p>Comprehensive coverage across platforms</p>
                 </div>
                 <div class="feature">
@@ -134,15 +150,15 @@ uv run hype "AI" 2025 2025 --source github --bucket days:10</code>
                     <p>Yearly, monthly, quarterly, or custom intervals</p>
                 </div>
                 <div class="feature">
-                    <h3>� Interactive Plots</h3>
+                    <h3>📈 Interactive Plots</h3>
                     <p>Built with Plotly for rich interactivity</p>
                 </div>
                 <div class="feature">
-                    <h3>� CSV Export</h3>
+                    <h3>💾 CSV Export</h3>
                     <p>All data exported for further analysis</p>
                 </div>
                 <div class="feature">
-                    <h3>� Modern Python</h3>
+                    <h3>🐍 Modern Python</h3>
                     <p>Built with uv, type hints, async-ready</p>
                 </div>
                 <div class="feature">
