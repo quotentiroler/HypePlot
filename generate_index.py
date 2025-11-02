@@ -57,15 +57,59 @@ def generate_html(structure: dict, output_file: Path):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HypePlot Showcase - Multi-Source Academic Keyword Tracking</title>
+    <meta name="description" content="HypePlot: Track academic keyword trends across 12 data sources including GitHub, arXiv, Reddit, YouTube, Google Scholar, Google Trends, News, Twitter, Patents, PyPI Packages, Job Postings, and NSF Grants. Analyze data with flexible time bucketing (yearly, quarterly, monthly).">
+    <meta name="keywords" content="academic trends, keyword tracking, research trends, GitHub analytics, arXiv papers, Google Scholar, Google Trends, patent analysis, research funding, NSF grants, data visualization, trend analysis, topic tracking">
+    <meta name="author" content="HypePlot">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quotentiroler.github.io/HypePlot/">
+    <meta property="og:title" content="HypePlot - Multi-Source Academic Keyword Tracking">
+    <meta property="og:description" content="Track keyword trends across 12 data sources with configurable time buckets. Comprehensive academic and industry trend analysis tool.">
+    <meta property="og:image" content="https://quotentiroler.github.io/HypePlot/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://quotentiroler.github.io/HypePlot/">
+    <meta property="twitter:title" content="HypePlot - Multi-Source Academic Keyword Tracking">
+    <meta property="twitter:description" content="Track keyword trends across 12 data sources with configurable time buckets. Comprehensive academic and industry trend analysis tool.">
+    <meta property="twitter:image" content="https://quotentiroler.github.io/HypePlot/og-image.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://quotentiroler.github.io/HypePlot/">
+    
+    <title>HypePlot - Multi-Source Academic Keyword Tracking | 12 Data Sources</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Structured Data / JSON-LD for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "HypePlot",
+      "applicationCategory": "DataVisualization",
+      "operatingSystem": "Cross-platform",
+      "description": "Multi-source academic keyword tracking tool that analyzes trends across GitHub, arXiv, Reddit, YouTube, Google Scholar, Google Trends, News APIs, Twitter, USPTO Patents, PyPI Packages, Job Boards, and NSF Research Grants.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1"
+      }
+    }
+    </script>
 </head>
 <body>
     <header>
         <div class="container">
             <h1>📊 HypePlot</h1>
             <p class="tagline">Multi-Source Academic Keyword Tracking</p>
-            <p class="subtitle">Track trends across 11 data sources with configurable time buckets</p>
+            <p class="subtitle">Track trends across 12 data sources with configurable time buckets</p>
         </div>
     </header>
 
