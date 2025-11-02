@@ -321,6 +321,21 @@ h3 {
     box-shadow: 0 5px 15px rgba(0, 78, 137, 0.3);
 }
 
+.button.disabled {
+    background: #ccc;
+    color: #666;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.button.disabled:hover {
+    background: #ccc;
+    color: #666;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Footer */
 footer {
     background: var(--text-dark);
