@@ -76,9 +76,8 @@ def get_range(
     search_term: str, 
     start_year: int, 
     end_year: int, 
-    output_file: str = "github_data.csv",
     bucket_days: int = 365
-):
+) -> pd.DataFrame:
     """
     Extract GitHub repository statistics for a date range.
     
@@ -86,8 +85,10 @@ def get_range(
         search_term: Search query
         start_year: Start year
         end_year: End year
-        output_file: Path to output CSV file
         bucket_days: Number of days per time bucket
+        
+    Returns:
+        DataFrame with repository statistics per time period
     """
     print(f"Searching GitHub for '{search_term}' ({start_year}-{end_year}, {bucket_days}-day buckets)...")
     
@@ -115,11 +116,8 @@ def get_range(
         # 6 seconds = 10 requests per minute
         time.sleep(6)
     
-    # Save to CSV
+    # Return DataFrame (caller handles CSV saving)
     df = pd.DataFrame(data)
-    df.to_csv(output_file, index=False)
-    print(f"\n✅ GitHub data saved to: {output_file}")
-    
     return df
 
 

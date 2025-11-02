@@ -3,11 +3,31 @@ from __future__ import annotations
 
 from pathlib import Path
 import webbrowser
+import pandas as pd
 
 
 def slug(s: str) -> str:
     """Create a filesystem-friendly slug from a term."""
     return s.replace("\\", "").replace("/", "").replace(" ", "_").lower()
+
+
+def save_csv(df: pd.DataFrame, output_file: str | Path, source_name: str = "Data") -> Path:
+    """
+    Save a DataFrame to CSV with consistent formatting and messaging.
+    
+    Args:
+        df: DataFrame to save
+        output_file: Path where to save the CSV
+        source_name: Display name for logging (e.g., "GitHub", "NSF grants")
+    
+    Returns:
+        Path object of the saved file
+    """
+    output_path = Path(output_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_path, index=False)
+    print(f"✅ {source_name} data saved to: {output_path}")
+    return output_path
 
 
 def resolve_effective_outdir(outdir_arg: str | None, term: str, no_term_subdir: bool = False) -> Path | None:

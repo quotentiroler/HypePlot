@@ -18,11 +18,44 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import pandas as pd
 import importlib
 
 from utils.utils_io import resolve_effective_outdir, slug as util_slug, save_png_if_requested
+
+
+def parse_year_or_date(value: str) -> int:
+    """
+    Parse a year (YYYY) or date (YYYY-MM-DD) string and return the year as an integer.
+    
+    Args:
+        value: String in format "YYYY" or "YYYY-MM-DD"
+    
+    Returns:
+        Year as integer
+    
+    Raises:
+        ValueError: If the format is invalid
+    """
+    value = value.strip()
+    
+    # Try parsing as date first (YYYY-MM-DD)
+    if '-' in value:
+        try:
+            parsed_date = datetime.strptime(value, "%Y-%m-%d")
+            return parsed_date.year
+        except ValueError:
+            raise ValueError(f"Invalid date format: '{value}'. Expected YYYY-MM-DD")
+    
+    # Try parsing as year (YYYY)
+    try:
+        year = int(value)
+        if year < 1900 or year > 2100:
+            raise ValueError(f"Year {year} out of reasonable range (1900-2100)")
+        return year
+    except ValueError:
+        raise ValueError(f"Invalid year/date: '{value}'. Expected YYYY or YYYY-MM-DD")
 
 
 def get_available_sources() -> list[str]:
@@ -72,7 +105,7 @@ def process_generic_source(
 ) -> None:
     """
     Generic handler for data sources that follow the standard pattern:
-    - source_mod.get_range(term, start_year, end_year, output_file, bucket_days=..., **kwargs)
+    - source_mod.get_range(term, start_year, end_year, bucket_days=..., **kwargs) -> DataFrame
     - source_mod.visualize_data(csv_file, term, output_dir, open_browser, save_png)
     
     Args:
@@ -99,15 +132,18 @@ def process_generic_source(
     source_dir.mkdir(parents=True, exist_ok=True)
     source_csv = source_dir / f"{term_slug}_{source_name}_data.csv"
     
-    # Fetch data with bucket_days parameter
-    source_mod.get_range(
+    # Fetch data with bucket_days parameter (returns DataFrame)
+    df = source_mod.get_range(
         term, 
         start_year, 
         end_year, 
-        str(source_csv), 
         bucket_days=bucket_days,
         **get_range_kwargs
     )
+    
+    # Save CSV using utility
+    from utils.utils_io import save_csv
+    save_csv(df, source_csv, display_name)
     
     if "csv" in formats:
         results[f'{source_name}_csv'] = source_csv
@@ -325,7 +361,7 @@ def run_hypeplot(
 def build_parser() -> argparse.ArgumentParser:
     # Get available sources dynamically
     available_sources = get_available_sources()
-    default_sources = "scholar,trends,github,arxiv"
+    default_sources = ",".join(available_sources)  # Use all sources by default
     
     p = argparse.ArgumentParser(
         prog="hype",
@@ -348,8 +384,8 @@ Examples:
     )
     
     p.add_argument("term", help="Search term or topic to analyze")
-    p.add_argument("start_year", type=int, help="Start year for analysis")
-    p.add_argument("end_year", type=int, help="End year for analysis")
+    p.add_argument("start_year", help="Start year (YYYY) or date (YYYY-MM-DD) for analysis")
+    p.add_argument("end_year", help="End year (YYYY) or date (YYYY-MM-DD) for analysis")
     
     p.add_argument(
         "plot",
@@ -389,7 +425,7 @@ Examples:
         default="yearly",
         help=(
             "Time bucket for data accumulation. Options: "
-            "'yearly' (365 days), 'monthly' (30 days), 'quarterly' (90 days), "
+            "'yearly', 'monthly', 'quarterly' (3 months), "
             "or 'days:N' for custom day count (e.g., 'days:10', 'days:180'). "
             "Default: yearly"
         )
@@ -401,6 +437,14 @@ Examples:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    
+    # Parse start and end years (supports both YYYY and YYYY-MM-DD)
+    try:
+        start_year = parse_year_or_date(args.start_year)
+        end_year = parse_year_or_date(args.end_year)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return 1
     
     # Check if "plot" was passed as positional argument
     has_plot = args.plot == "plot"
@@ -432,8 +476,8 @@ def main() -> int:
     
     return run_hypeplot(
         args.term,
-        args.start_year,
-        args.end_year,
+        start_year,
+        end_year,
         sources,
         formats,
         args.topic,

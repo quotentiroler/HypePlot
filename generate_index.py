@@ -74,7 +74,7 @@ def generate_html(structure: dict, output_file: Path):
             <h2>About This Project</h2>
             <p>
                 HypePlot is a comprehensive tool for tracking keyword trends across multiple platforms and timeframes. 
-                It combines <strong>11 powerful data sources</strong> to give you a complete picture of topic evolution:
+                It combines <strong>12 powerful data sources</strong> to give you a complete picture of topic evolution:
             </p>
             <div class="sources-grid">
                 <div class="source-tag">🐙 GitHub</div>
@@ -88,6 +88,7 @@ def generate_html(structure: dict, output_file: Path):
                 <div class="source-tag">⚖️ Patents</div>
                 <div class="source-tag">📦 Packages</div>
                 <div class="source-tag">💼 Jobs</div>
+                <div class="source-tag">💰 Grants</div>
             </div>
             <p style="margin-top: 20px;">
                 <strong>Flexible Time Bucketing:</strong> Analyze data at yearly, monthly, quarterly, or custom intervals (e.g., every 10 days).
@@ -115,6 +116,9 @@ def generate_html(structure: dict, output_file: Path):
         for source, files in sorted(sources.items()):
             if files['html']:
                 html += f'                    <a href="{files["html"]}" class="button primary">{source.title()} Chart</a>\n'
+            elif files['csv']:
+                # Has CSV but no HTML - show info message
+                html += f'                    <span class="button disabled" title="Visualization not generated">{source.title()} (CSV only)</span>\n'
         
         # Add CSV download links
         has_csv = any(files['csv'] for files in sources.values())
@@ -122,7 +126,7 @@ def generate_html(structure: dict, output_file: Path):
             html += '                    <br>\n'
             for source, files in sorted(sources.items()):
                 if files['csv']:
-                    html += f'                    <a href="{files["csv"]}" class="button secondary">{source.title()} CSV</a>\n'
+                    html += f'                    <a href="{files["csv"]}" class="button secondary" download>{source.title()} CSV</a>\n'
         
         html += '''                </div>
             </div>
@@ -166,13 +170,14 @@ uv run hype "AI" 2025 2025 plot --source github --bucket days:10</code>
                 <li><code>patents</code> - USPTO patents</li>
                 <li><code>packages</code> - PyPI download stats</li>
                 <li><code>jobs</code> - Job postings (Adzuna)</li>
+                <li><code>grants</code> - NSF research grants and funding</li>
             </ul>
 
             <h3>Time Bucket Options</h3>
             <ul>
-                <li><code>--bucket yearly</code> - Annual aggregation (365 days)</li>
-                <li><code>--bucket quarterly</code> - Quarterly periods (90 days)</li>
-                <li><code>--bucket monthly</code> - Monthly periods (30 days)</li>
+                <li><code>--bucket yearly</code> - Annual aggregation (1 year)</li>
+                <li><code>--bucket quarterly</code> - Quarterly periods (3 months)</li>
+                <li><code>--bucket monthly</code> - Monthly periods</li>
                 <li><code>--bucket days:N</code> - Custom N-day periods</li>
             </ul>
         </section>
@@ -181,7 +186,7 @@ uv run hype "AI" 2025 2025 plot --source github --bucket days:10</code>
             <h2>✨ Features</h2>
             <div class="feature-grid">
                 <div class="feature">
-                    <h3>🔍 11 Data Sources</h3>
+                    <h3>🔍 12 Data Sources</h3>
                     <p>Comprehensive coverage across platforms</p>
                 </div>
                 <div class="feature">
@@ -225,7 +230,7 @@ uv run hype "AI" 2025 2025 plot --source github --bucket days:10</code>
     <footer>
         <div class="container">
             <p>
-                Built with Python • uv • Plotly • 11 Data Sources
+                Built with Python • uv • Plotly • 12 Data Sources
             </p>
             <p class="update-info">
                 Last updated: <span id="last-update">Check GitHub Actions</span>

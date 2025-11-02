@@ -22,35 +22,30 @@ jobs:
             query: "FHIR"
             start: 2015
             end: 2025
-            sources: "github,arxiv,reddit,youtube"
             bucket: "yearly"
           
           - name: "FHIR Quarterly Trends"
             query: "FHIR"
             start: 2023
             end: 2025
-            sources: "github,arxiv,reddit"
             bucket: "quarterly"
           
           - name: "FHIR Monthly Detail"
             query: "FHIR"
             start: 2024
             end: 2025
-            sources: "github,reddit,news"
             bucket: "monthly"
           
           - name: "AI Yearly Overview"
             query: "artificial intelligence"
             start: 2018
             end: 2025
-            sources: "github,arxiv,youtube"
             bucket: "yearly"
           
           - name: "Python Packages Monthly"
             query: "pandas"
             start: 2023
             end: 2025
-            sources: "packages"
             bucket: "monthly"
     
     steps:
@@ -73,7 +68,7 @@ jobs:
       
       - name: Generate ${{ matrix.showcase.name }}
         run: |
-          uv run hype "${{ matrix.showcase.query }}" ${{ matrix.showcase.start }} ${{ matrix.showcase.end }} plot --source ${{ matrix.showcase.sources }} --bucket ${{ matrix.showcase.bucket }}
+          uv run hype "${{ matrix.showcase.query }}" ${{ matrix.showcase.start }} ${{ matrix.showcase.end }} plot --bucket ${{ matrix.showcase.bucket }}
         continue-on-error: true
       
       - name: Upload outputs as artifact
